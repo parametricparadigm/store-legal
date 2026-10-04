@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Authorization Code</title>
+<style>
+  :root { color-scheme: light dark; }
+  body { font: 16px/1.6 system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+         max-width: 720px; margin: 2rem auto; padding: 0 1rem; text-align: center; }
+  h1 { font-size: 1.4rem; }
+  #code { word-break: break-all; background: rgba(127,127,127,.15); padding: 1rem;
+          border-radius: 8px; font-family: ui-monospace, monospace; font-size: .9rem;
+          margin: 1rem 0; }
+  button { font-size: 1rem; padding: .6rem 1.2rem; border-radius: 8px; cursor: pointer; }
+  .ok { color: #16a34a; } .warn { color: #d97706; }
+</style>
+</head>
+<body>
+  <h1>eBay Authorization Code</h1>
+  <p>Copy this code and paste it back to your assistant.</p>
+  <div id="code">(looking for ?code= in the URL…)</div>
+  <button onclick="copyCode()">Copy code</button>
+  <p id="msg"></p>
+  <script>
+    function getCode() {
+      var p = new URLSearchParams(location.search);
+      return p.get('code') || new URLSearchParams(location.hash.replace(/^#/, '')).get('code');
+    }
+    var code = getCode();
+    var el = document.getElementById('code');
+    if (code) { el.textContent = code; }
+    else { el.textContent = 'No code found in the URL. Make sure you arrived here after approving on eBay.'; el.className = 'warn'; }
+    function copyCode() {
+      if (!code) return;
+      navigator.clipboard.writeText(code).then(function () {
+        document.getElementById('msg').textContent = 'Copied!';
+        document.getElementById('msg').className = 'ok';
+      }).catch(function () {
+        document.getElementById('msg').textContent = 'Copy failed — select the code above and copy manually.';
+        document.getElementById('msg').className = 'warn';
+      });
+    }
+  </script>
+</body>
+</html>
